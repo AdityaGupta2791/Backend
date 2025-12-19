@@ -7,8 +7,20 @@ const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 
+// Validate required environment variables at startup
+const requiredEnv = ['MONGO_URI', 'PORT', 'JWT_SECRET', 'JWT_EXPIRES'];
+const missing = requiredEnv.filter((k) => !process.env[k]);
+if (missing.length) {
+  console.error(`Missing required environment variables: ${missing.join(', ')}`);
+  process.exit(1);
+}
+
 const app = express();
-const port = process.env.PORT || 4000;
+const port = parseInt(process.env.PORT, 10);
+if (Number.isNaN(port) || port <= 0) {
+  console.error('Invalid PORT environment variable. It must be a positive integer');
+  process.exit(1);
+}
 
 app.use(express.json());
 app.use(cors());

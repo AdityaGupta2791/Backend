@@ -2,8 +2,8 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
 const signToken = (user) =>
-  jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'changeme', {
-    expiresIn: process.env.JWT_EXPIRES || '1d',
+  jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES,
   });
 
 const getProfile = async (req, res) => {
