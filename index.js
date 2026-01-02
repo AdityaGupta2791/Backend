@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 // Validate required environment variables at startup
 const requiredEnv = ['MONGO_URI', 'PORT', 'JWT_SECRET', 'JWT_EXPIRES'];
@@ -32,14 +33,19 @@ connectDB();
 app.use('/images', express.static(path.join(__dirname, 'upload', 'images')));
 
 // Health check
-app.get('/', (req, res) => res.send('Express App is Running'));
+app.get('/', (req, res) => {
+  return res.status(200).json({
+    message: 'Express App is Running'
+  });
+});
 
 // Routes
 app.use('/', productRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/cart', cartRoutes);
 
 app.listen(port, (err) => {
   if (!err) console.log(`Server Running on Port ${port}`);
-  else console.error('Error :', err);
+  else console.error('Error:', err);
 });

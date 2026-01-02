@@ -9,45 +9,65 @@ const signToken = (user) =>
 const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    if (!name || !email || !password)
-      return res.status(400).json({ message: 'name, email and password are required' });
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "name, email and password are required"
+      });
+    }
 
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'Email already in use' });
+    if (existing) {
+      return res.status(400).json({
+        message: "Email already in use"
+      });
+    }
 
     const user = new User({ name, email, password, role });
     await user.save();
 
     const token = signToken(user);
-    res.status(201).json({
+    return res.status(201).json({
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 
 const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: 'email and password are required' });
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "email and password are required"
+      });
+    }
 
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({
+        message: "Invalid credentials"
+      });
     }
 
     const token = signToken(user);
-    res.json({
+    return res.status(200).json({
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 
-module.exports = { signup, signin };
+module.exports = { 
+  signup, 
+  signin 
+};

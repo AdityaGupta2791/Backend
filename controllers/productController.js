@@ -2,10 +2,16 @@ const Product = require('../models/productModel');
 
 const uploadImage = (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ success: 0, message: 'No file uploaded' });
+    return res.status(400).json({
+      success: 0,
+      message: "No file uploaded"
+    });
   }
   const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-  res.json({ success: 1, image_url: imageUrl });
+  return res.status(200).json({
+    success: 1,
+    image_url: imageUrl
+  });
 };
 
 // Create product — rely on MongoDB _id
@@ -19,20 +25,32 @@ const addProduct = async (req, res) => {
       old_price: req.body.old_price
     });
     await product.save();
-    res.status(201).json({ success: true, product });
+    return res.status(201).json({
+      success: true,
+      product
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    return res.status(500).json({
+      success: false,
+      error: "Server error"
+    });
   }
 };
 
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({});
-    res.json(products);
+    return res.status(200).json({
+      success: true,
+      products
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    return res.status(500).json({
+      success: false,
+      error: "Server error"
+    });
   }
 };
 
@@ -41,7 +59,12 @@ const updateProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await Product.findById(id);
-    if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
 
     const { name, image, category, new_price, old_price } = req.body;
     if (name) product.name = name;
@@ -51,10 +74,17 @@ const updateProduct = async (req, res) => {
     if (old_price) product.old_price = old_price;
 
     await product.save();
-    res.json({ success: true, id, message: 'Product updated' });
+    return res.status(200).json({
+      success: true,
+      id,
+      message: "Product updated"
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    return res.status(500).json({
+      success: false,
+      error: "Server error"
+    });
   }
 };
 
@@ -63,11 +93,22 @@ const removeProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const deleted = await Product.findByIdAndDelete(id);
-    if (!deleted) return res.status(404).json({ success: false, message: 'Product not found' });
-    res.json({ success: true, id });
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      id
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    return res.status(500).json({
+      success: false,
+      error: "Server error"
+    });
   }
 };
 

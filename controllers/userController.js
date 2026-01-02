@@ -8,23 +8,33 @@ const signToken = (user) =>
 
 const getProfile = async (req, res) => {
   try {
-    res.json({ user: req.user });
+    return res.status(200).json({
+      user: req.user
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 
 const updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
 
     const { name, email, password } = req.body;
 
     // Disallow changing email via profile update
     if (typeof email !== 'undefined' && email !== user.email) {
-      return res.status(400).json({ message: 'Email cannot be changed' });
+      return res.status(400).json({
+        message: "Email cannot be changed"
+      });
     }
 
     if (name) user.name = name;
@@ -33,11 +43,19 @@ const updateProfile = async (req, res) => {
     await user.save();
 
     const token = signToken(user);
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+    return res.status(200).json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 
-module.exports = { getProfile, updateProfile };
+module.exports = { 
+  getProfile, 
+  updateProfile 
+};
