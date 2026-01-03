@@ -7,6 +7,7 @@ const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 // Validate required environment variables at startup
 const requiredEnv = ['MONGO_URI', 'PORT', 'JWT_SECRET', 'JWT_EXPIRES'];
@@ -44,6 +45,7 @@ app.use('/', productRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/cart', cartRoutes);
+app.use('/orders', orderRoutes);
 
 app.listen(port, (err) => {
   if (!err) console.log(`Server Running on Port ${port}`);
