@@ -8,6 +8,6 @@ router.post('/upload', protect, adminOnly, upload.single('product'), uploadImage
 router.post('/addproduct', protect, adminOnly, addProduct);
 router.put('/product/:id', protect, adminOnly, updateProduct);
 router.delete('/product/:id', protect, adminOnly, removeProduct);
-router.get('/allproducts', getAllProducts);
+router.get('/', getAllProducts);
 
 module.exports = router;
